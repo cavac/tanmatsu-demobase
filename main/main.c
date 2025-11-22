@@ -172,7 +172,7 @@ void app_main(void) {
     bsp_audio_initialize(SAMPLE_RATE);
     bsp_audio_get_i2s_handle(&i2s_handle);
     bsp_audio_set_amplifier(true);   // Enable amplifier
-    bsp_audio_set_volume(0);       // Set master volume to maximum
+    bsp_audio_set_volume(100);       // Set master volume to maximum
 
     // Initialize active sounds array
     memset(active_sounds, 0, sizeof(active_sounds));
