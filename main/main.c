@@ -28,7 +28,7 @@
 #include "modplayer_esp32.h"
 #include "logo_image.h"
 
-//#define CAVAC_DEBUG
+#define CAVAC_DEBUG
 
 // Constants
 //static char const TAG[] = "main";
@@ -222,7 +222,7 @@ void app_main(void) {
 
     // Convert ESP-IDF color format into PAX buffer type
     pax_buf_type_t format = PAX_BUF_24_888RGB;
-        sprintf(debugcolor, "Mode RGB888");
+    sprintf(debugcolor, "Mode RGB888");
     switch (display_color_format) {
         case LCD_COLOR_PIXEL_FORMAT_RGB565:
             format = PAX_BUF_16_565RGB;
