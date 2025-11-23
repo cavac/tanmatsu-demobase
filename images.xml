@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Image Conversion Manifest
+
+  This file defines all PNG images to be converted to C headers for the project.
+  The conversion script (convert_logo.py) reads this file and generates corresponding
+  header files with pixel data.
+
+  Format configuration is read from main/main.h (SCREEN_FORMAT_RGB888 or SCREEN_FORMAT_RGB565)
+
+  Each <image> element contains:
+    - source: Path to source PNG file (relative to project root)
+    - target: Path to generated C header file
+    - name: Base name for generated constants (e.g., "logo" generates LOGO_WIDTH, logo_image_data)
+-->
+<images>
+    <image>
+        <source>tanmatsulogo.png</source>
+        <target>main/logo_image.h</target>
+        <name>logo</name>
+    </image>
+    <image>
+        <source>test_square.png</source>
+        <target>main/test_square_image.h</target>
+        <name>test_square</name>
+    </image>
+    <image>
+        <source>test_horizontal.png</source>
+        <target>main/test_horizontal_image.h</target>
+        <name>test_horizontal</name>
+    </image>
+    <image>
+        <source>test_vertical.png</source>
+        <target>main/test_vertical_image.h</target>
+        <name>test_vertical</name>
+    </image>
+</images>

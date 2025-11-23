@@ -26,7 +26,11 @@
 #include "wifi_remote.h"
 #include "bounce_sounds.h"
 #include "modplayer_esp32.h"
+#include "main.h"
 #include "logo_image.h"
+#include "test_square_image.h"
+#include "test_horizontal_image.h"
+#include "test_vertical_image.h"
 
 #define CAVAC_DEBUG
 
@@ -273,7 +277,11 @@ void app_main(void) {
     pax_buf_set_orientation(&fb, orientation);
 
     // Initialize logo buffer (already pre-rotated in the image data)
+#ifdef SCREEN_FORMAT_RGB888
+    pax_buf_init(&logo_buf, (void*)logo_image_data, LOGO_WIDTH, LOGO_HEIGHT, PAX_BUF_24_888RGB);
+#else
     pax_buf_init(&logo_buf, (void*)logo_image_data, LOGO_WIDTH, LOGO_HEIGHT, PAX_BUF_16_565RGB);
+#endif
 
 #if defined(CONFIG_BSP_TARGET_KAMI)
 #define BLACK 0
@@ -307,25 +315,21 @@ void app_main(void) {
     uint8_t led_colormap[15] = {0xFF, 0x00, 0x00, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00}; // Color of the balls, split into bytes
 
     // IMPLEMENT TEST INITIALIZATION HERE
-    // Create test image buffers for PAX image bug testing
-    // Test 1: Square 24bpp image (100x100) - should work
-    // Test 2: Rectangular 24bpp image (200x50) - previously broken
-    // Test 3: Rectangular 24bpp image (50x200) - previously broken
+    // Load test image buffers from converted PNG files
+    // Test images loaded from flash memory (test_square.png, test_horizontal.png, test_vertical.png)
+    // Format matches SCREEN_FORMAT defined in main.h
 
     pax_buf_t test_square, test_wide, test_tall;
-    pax_buf_init(&test_square, NULL, 100, 100, PAX_BUF_24_888RGB);
-    pax_buf_init(&test_wide, NULL, 200, 50, PAX_BUF_24_888RGB);
-    pax_buf_init(&test_tall, NULL, 50, 200, PAX_BUF_24_888RGB);
 
-    // Explicitly set buffers to UPRIGHT orientation (default, but make it explicit)
-    pax_buf_set_orientation(&test_square, PAX_O_UPRIGHT);
-    pax_buf_set_orientation(&test_wide, PAX_O_UPRIGHT);
-    pax_buf_set_orientation(&test_tall, PAX_O_UPRIGHT);
-
-    // Fill test images with distinct solid colors (no outline for now)
-    pax_background(&test_square, 0xFF008000);  // Dark green square
-    pax_background(&test_wide, 0xFFFF0000);    // Bright red wide rectangle
-    pax_background(&test_tall, 0xFF0000FF);    // Bright blue tall rectangle
+#ifdef SCREEN_FORMAT_RGB888
+    pax_buf_init(&test_square, (void*)test_square_image_data, TEST_SQUARE_WIDTH, TEST_SQUARE_HEIGHT, PAX_BUF_24_888RGB);
+    pax_buf_init(&test_wide, (void*)test_horizontal_image_data, TEST_HORIZONTAL_WIDTH, TEST_HORIZONTAL_HEIGHT, PAX_BUF_24_888RGB);
+    pax_buf_init(&test_tall, (void*)test_vertical_image_data, TEST_VERTICAL_WIDTH, TEST_VERTICAL_HEIGHT, PAX_BUF_24_888RGB);
+#else
+    pax_buf_init(&test_square, (void*)test_square_image_data, TEST_SQUARE_WIDTH, TEST_SQUARE_HEIGHT, PAX_BUF_16_565RGB);
+    pax_buf_init(&test_wide, (void*)test_horizontal_image_data, TEST_HORIZONTAL_WIDTH, TEST_HORIZONTAL_HEIGHT, PAX_BUF_16_565RGB);
+    pax_buf_init(&test_tall, (void*)test_vertical_image_data, TEST_VERTICAL_WIDTH, TEST_VERTICAL_HEIGHT, PAX_BUF_16_565RGB);
+#endif
 
     // Bounce sound frequencies: 440, 554, 659, 784, 880 Hz (pentatonic scale)
     // Sound samples are pre-generated and loaded from bounce_sounds.h
@@ -354,19 +358,15 @@ void app_main(void) {
         pax_draw_text(&fb, WHITE, pax_font_sky_mono, 16, 20, 100, debugheight); // Tanmatsu: 800
 #endif // CAVAC_DEBUG
 
-        // IMPLEMENT TEST DRAWING HERE
-        // Draw test images to verify PAX bug fix
-        // Square image (100x100) - dark green
-        pax_draw_image_sized(&fb, &test_square, 20, 150, 100, 100);
-        pax_draw_text(&fb, WHITE, pax_font_sky_mono, 12, 20, 260, "Square 100x100");
+        // Draw test images (loaded from PNG files)
+        pax_draw_image(&fb, &test_square, 20, 150);
+        pax_draw_text(&fb, WHITE, pax_font_sky_mono, 12, 20, 360, "test_square.png");
 
-        // Wide rectangle (200x50) - bright red
-        pax_draw_image(&fb, &test_wide, 140, 150);
-        pax_draw_text(&fb, WHITE, pax_font_sky_mono, 12, 140, 210, "Wide 200x50");
+        pax_draw_image(&fb, &test_wide, 240, 50);
+        pax_draw_text(&fb, WHITE, pax_font_sky_mono, 12, 240, 110, "test_horizontal.png");
 
-        // Tall rectangle (50x200) - bright blue
-        pax_draw_image(&fb, &test_tall, 360, 150);
-        pax_draw_text(&fb, WHITE, pax_font_sky_mono, 12, 360, 360, "Tall 50x200");
+        pax_draw_image(&fb, &test_tall, 660, 150);
+        pax_draw_text(&fb, WHITE, pax_font_sky_mono, 12, 600, 360, "test_vertical.png");
 
 
         memset(led_data, 0, 18); // LEDS OFF
