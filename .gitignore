@@ -20,3 +20,4 @@ badgelink
 sdkconfig_*
 .hg
 .hgignore
+components/

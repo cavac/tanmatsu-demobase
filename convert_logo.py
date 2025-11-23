@@ -41,10 +41,6 @@ def main():
         new_width = original_width
         new_height = original_height
 
-    # Rotate 90 degrees clockwise for screen orientation
-    print("Rotating image 90° clockwise")
-    logo = logo.rotate(-90, expand=True)
-
     logo_width, logo_height = logo.size
 
     # Flatten transparency onto black background

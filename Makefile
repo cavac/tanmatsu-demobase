@@ -1,4 +1,4 @@
-PORT ?= /dev/ttyACM0
+PORT ?= /dev/ttyACM1
 
 IDF_PATH ?= $(shell cat .IDF_PATH 2>/dev/null || echo `pwd`/esp-idf)
 IDF_TOOLS_PATH ?= $(shell cat .IDF_TOOLS_PATH 2>/dev/null || echo `pwd`/esp-idf-tools)
@@ -176,6 +176,6 @@ prepare_rgb888:
 	cd pax-graphics && \
 	git submodule update --init --recursive && \
 	cd ../.. && \
-	rm -rf managed_components/managed_components/robotman2412__pax-gfx && \
+	rm -rf managed_components/robotman2412__pax-gfx && \
 	rm -rf managed_components/nicolaielectronics__mipi_dsi_abstraction && \
 	rm -rf build
