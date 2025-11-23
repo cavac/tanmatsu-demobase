@@ -1,4 +1,4 @@
-PORT ?= /dev/ttyACM1
+PORT ?= /dev/ttyACM0
 
 IDF_PATH ?= $(shell cat .IDF_PATH 2>/dev/null || echo `pwd`/esp-idf)
 IDF_TOOLS_PATH ?= $(shell cat .IDF_TOOLS_PATH 2>/dev/null || echo `pwd`/esp-idf-tools)

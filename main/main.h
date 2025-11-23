@@ -11,7 +11,7 @@
 #define SCREEN_FORMAT_RGB888
 
 // Option 2: RGB565 (16-bit color, 65K colors, 2 bytes per pixel)
-// #define SCREEN_FORMAT_RGB565
+//#define SCREEN_FORMAT_RGB565
 
 // Validation: Ensure only one format is defined
 #if defined(SCREEN_FORMAT_RGB888) && defined(SCREEN_FORMAT_RGB565)

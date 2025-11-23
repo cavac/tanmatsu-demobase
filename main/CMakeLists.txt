@@ -8,6 +8,7 @@ idf_component_register(
 		nvs_flash
 		badge-bsp
 		tanmatsu-wifi
+		esp32-component-mipi-dsi-abstraction
 	INCLUDE_DIRS
 		"."
 )

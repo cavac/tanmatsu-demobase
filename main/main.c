@@ -35,10 +35,13 @@
 #define CAVAC_DEBUG
 
 // Constants
-//static char const TAG[] = "main";
+static char const TAG[] = "main";
 
 // External BSP audio function (not in public header)
 extern void bsp_audio_initialize(uint32_t rate);
+
+// External ST7701 color format function (from esp32-component-mipi-dsi-abstraction)
+extern esp_err_t st7701_set_color_format(lcd_color_rgb_pixel_format_t format);
 
 // Audio constants
 #define MAX_ACTIVE_SOUNDS 5
@@ -169,7 +172,16 @@ void app_main(void) {
     }
     ESP_ERROR_CHECK(res);
 
-    // Initialize the Board Support Package
+    // Configure display color format BEFORE initialization
+#ifdef SCREEN_FORMAT_RGB565
+    ESP_LOGI(TAG, "Configuring display for RGB565 (16-bit) mode");
+    ESP_ERROR_CHECK(st7701_set_color_format(LCD_COLOR_PIXEL_FORMAT_RGB565));
+#else
+    ESP_LOGI(TAG, "Display using RGB888 (24-bit) mode (default)");
+    // No action needed, already in RGB888 mode
+#endif
+
+    // Initialize the Board Support Package (this will use the configured format)
     ESP_ERROR_CHECK(bsp_device_initialize());
 
     // Initialize audio subsystem
