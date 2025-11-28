@@ -32,10 +32,10 @@
 #include "test_horizontal_image.h"
 #include "test_vertical_image.h"
 
-#define CAVAC_DEBUG
+//#define CAVAC_DEBUG
 
 // Constants
-static char const TAG[] = "main";
+//static char const TAG[] = "main";
 
 // External BSP audio function (not in public header)
 extern void bsp_audio_initialize(uint32_t rate);
@@ -172,23 +172,21 @@ void app_main(void) {
     }
     ESP_ERROR_CHECK(res);
 
-    // Configure display color format BEFORE initialization
-#ifdef SCREEN_FORMAT_RGB565
-    ESP_LOGI(TAG, "Configuring display for RGB565 (16-bit) mode");
-    ESP_ERROR_CHECK(st7701_set_color_format(LCD_COLOR_PIXEL_FORMAT_RGB565));
-#else
-    ESP_LOGI(TAG, "Display using RGB888 (24-bit) mode (default)");
-    // No action needed, already in RGB888 mode
-#endif
-
-    // Initialize the Board Support Package (this will use the configured format)
-    ESP_ERROR_CHECK(bsp_device_initialize());
+    // Initialize the Board Support Package
+    const bsp_configuration_t bsp_configuration = {
+        .display =
+            {
+                .requested_color_format = display_color_format,
+                .num_fbs                = 1,
+            },
+    };
+    ESP_ERROR_CHECK(bsp_device_initialize(&bsp_configuration));
 
     // Initialize audio subsystem
     bsp_audio_initialize(SAMPLE_RATE);
     bsp_audio_get_i2s_handle(&i2s_handle);
     bsp_audio_set_amplifier(true);   // Enable amplifier
-    bsp_audio_set_volume(100);       // Set master volume to maximum
+    bsp_audio_set_volume(0);       // Set master volume to maximum
 
     // Initialize active sounds array
     memset(active_sounds, 0, sizeof(active_sounds));
